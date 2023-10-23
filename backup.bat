@@ -2,7 +2,9 @@
 REM Defina as variáveis
 set ServerName=SERVIDOR/INSTÂNCIA
 set DatabaseName=NOME_DO_BANCO
-
+set BackupPath=CAMINHO DO BACKUP
+set SevenZipPath="CAMINHO DO EXECUTAL DO 7Z\7za.exe" 
+REM Substitua pelo caminho para o executável 7za.exe
 
 for /f %%a in ('wmic os get LocalDateTime ^| find "."') do set DateTime=%%a
 set Year=%DateTime:~0,4%
@@ -32,6 +34,15 @@ set SqlCmdCommand=sqlcmd -S %ServerName% -d %DatabaseName% -E -Q "BACKUP DATABAS
 
 REM Executa o comando SQL
 %SqlCmdCommand%
+
+REM Caminho completo para o arquivo de backup
+set backupFilePath=%backupPath%\%backupFileName%
+
+REM Caminho completo para o arquivo compactado
+set compressedFilePath=%backupPath%\%dayName%.7z
+
+REM Compacte o arquivo de backup usando o 7-Zip
+"%sevenZipPath%" a -t7z "%compressedFilePath%" "%backupFilePath%"
 
 REM Pause para que você possa ver a saída antes de fechar a janela
 pause
